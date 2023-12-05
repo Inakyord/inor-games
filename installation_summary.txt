@@ -1,0 +1,78 @@
+1. Donwload the image of Raspberry Pi OS Desktop with minimal software: https://www.raspberrypi.com/software/operating-systems/
+
+2. Flash it to a microSD card using the software Balena: https://etcher.balena.io/
+
+3. Insert the flashed microSD memory card into the Raspberry Pi 4.
+3.1. Wait for the initial boot and when prompted select the desired language and keyboard layout.
+3.2. Create the default user 'pi' with 'pi' as password.
+3.3. Connect to a wifi network and update the software.
+
+4. After the corresponding boot, open a terminal in the desktop.
+4.1. $ sudo raspi-config
+4.2. 3 Interface Options
+     I2 VNC
+     <YES>
+
+     2 Display Options
+     D3 VNC Resolution
+     1920x1080
+
+     Finish
+     ¿Reboot now? <YES>
+
+5. Open a terminal and get your ip address:
+5.1. $ hostname -I
+5.2. Save your ip for later VNC connection.
+
+6. Get the source code for the project.
+sudo apt install git
+6.1. $ git clone https://github.com/Inakyord/inor-games
+     $ cd 
+     $ cd inor-games
+
+7. Installed required packages:
+     $ sudo apt update && sudo apt upgrade -y
+     $ sudo apt-get install mednafen qjoypad mplayer ffmpeg wmctrl xdotool -y
+     $ pip install pyudev
+     $ pip install tk
+
+
+8. Modify the initial boot:
+8.1. $ sudo nano /boot/config.txt
+			add at the end: disable_splash=1
+8.2. $ sudo nano /boot/cmdline.txt
+			change tty1 to tty3
+			add: logo.nologo vt.global_cursor_default=0 quiet fsck.mod=skip silent loglevel=3
+8.3. remove initial screen with hardware information:
+	  $ sudo -E rpi-eeprom-config --edit
+			Adding: DISABLE_HDMI=1
+8.4. change splash image
+	  $ sudo cp /inor-games/boot_logo/boot_logo.png /usr/share/plymouth/themes/pix/splash.png
+
+9. Set control interface and setup by opening QJoypad with the control connected add a new layout and click quick set.
+   Now you move a button on joystick on the control and then select the key that it should match.
+   It is recommended to match the right click, mouse pointer, space key, enter key and scape key at least.
+
+10. Add missing (licensed) firmware to the emulator.
+	$ sudo cp /home/pi/inor-games/firmware /home/pi/.mednafen/firmware
+
+11. Configure fullscreen and audio driver of mednafen.
+   $ sudo nano /home/pi/.mednafen/mednafen.cfg
+   Change the video.fs parameter from 0 to 1.
+   Change the sound.driver parameter from default to sdl.
+
+12. Open mednafen from desktop and select path of roms to /home/pi/inor-games/ROMS
+
+13. Avoid desktop environment and add starting files:
+   $ sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
+   Comment the first three lines with #, then add:
+   mplayer -fs -noborder /home/pi/inor-games/boot_logo/logo.mp4
+   qjoypad
+   @python3 /home/pi/inor-games/manage_usb.py
+   @python3 /home/pi/inor-games/start_mednafen.py
+
+14. Reboot and wait for the logos.
+	 After selecting any game press the buttons mapped to the keys Alt+Shift+1 and you will enter the game setup control.
+	 Setup the control as desired for a better gaming experience.
+
+15. You can remote access the control with vnc by using the previously obtained vnc.
