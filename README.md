@@ -7,8 +7,8 @@ Installation and setting up of a retro videogame console with the emulator Medna
 FINAL PROJECT: retro videogame console
 
 DEVELOPERS:
-Emilio Garcia
-Iñaky Ordiales
+Emilio Garcia, 
+Iñaky Ordiales, 
 Bryan Vargas
 
 This project allows you to run several retro videogames in a Raspberry Pi, adding your own boot logo and boot sound.
